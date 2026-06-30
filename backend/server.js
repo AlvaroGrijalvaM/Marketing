@@ -9,7 +9,7 @@ app.use(cors());
 app.use(express.json());
 
 // Nodemailer transport with Gmail OAuth2
-const transporter = nodemailer.createTransport({
+const transporter=nodemailer.createTransport({
   service: "gmail",
   auth: {
     type: "OAuth2",
