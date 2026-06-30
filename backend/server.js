@@ -1,9 +1,9 @@
 require("dotenv").config();
-const express = require("express");
-const cors = require("cors");
-const nodemailer = require("nodemailer");
-const validateQuoteForm = require("./middleware/validateQuoteForm");
-const app = express();
+const express=require("express");
+const cors=require("cors");
+const nodemailer=require("nodemailer");
+const validateQuoteForm=require("./middleware/validateQuoteForm");
+const app=express();
 
 app.use(cors());
 app.use(express.json());
