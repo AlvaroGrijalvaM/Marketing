@@ -1,0 +1,263 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Versailles';
+  src: local('Versailles'), local('Versailles-Regular');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Versailles';
+  src: local('Versailles Bold'), local('Versailles-Bold');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Perandory';
+  src: local('Perandory'), local('Perandory-Regular');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Perandory';
+  src: local('Perandory Bold'), local('Perandory-Bold');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --text: #9F8F7C;
+  --text-h: #644D37;
+  --bg: #FFF8EF;
+  --border: #46472A;
+  --code-bg: #FFF8EF;
+  --accent: #838661;
+  --accent-bg: rgba(131, 134, 97, 0.1);
+  --accent-border: rgba(131, 134, 97, 0.5);
+  --social-bg: rgba(70, 71, 42, 0.08);
+  --shadow: rgba(70, 71, 42, 0.1) 0 10px 15px -3px, rgba(70, 71, 42, 0.05) 0 4px 6px -2px;
+  --sans: 'Open Sans', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --heading: 'Versailles', Georgia, 'Times New Roman', serif;
+  --serif: 'Perandory', Georgia, 'Times New Roman', serif;
+  --mono: ui-monospace, Consolas, monospace;
+
+  /* Brand colors */
+  --brand-primary: #838661;
+  --brand-dark: #838661;
+  --brand-light-border: #46472A;
+  --brand-heading: #644D37;
+
+  font: 18px/145% var(--sans);
+  letter-spacing: 0.18px;
+  color-scheme: light;
+  color: var(--text);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  @media (max-width: 1024px) {
+    font-size: 16px;
+  }
+}
+
+body {
+  margin: 0;
+}
+
+#root{
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  text-align: center;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+h1, h2{
+  font-family: var(--heading);
+  font-weight: 500;
+  color: var(--text-h);
+}
+
+h1{
+  font-size: 56px;
+  letter-spacing: -1.68px;
+  margin: 32px 0;
+  @media (max-width: 1024px){
+    font-size: 36px;
+    margin: 20px 0;
+  }
+}
+
+h2{
+  font-size: 24px;
+  line-height: 118%;
+  letter-spacing: -0.24px;
+  margin: 0 0 8px;
+  @media (max-width: 1024px){
+    font-size: 20px;
+  }
+}
+
+p{
+  margin: 0;
+}
+
+code, .counter{
+  font-family: var(--mono);
+  display: inline-flex;
+  border-radius: 4px;
+  color: var(--text-h);
+}
+
+code{
+  font-size: 15px;
+  line-height: 135%;
+  padding: 4px 8px;
+  background: var(--code-bg);
+}
+
+@layer components {
+  /* Page content container */
+  .page-container {
+    width: 100%;
+    max-width: 48rem;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+    text-align: left;
+  }
+
+  /* Wide container */
+  .container-wide {
+    width: 100%;
+    max-width: 72rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Content card */
+  .content-card {
+    background: var(--bg);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    border: 1px solid var(--brand-light-border);
+    box-shadow: var(--shadow);
+  }
+
+  /* Page heading (h1)*/
+  .heading-page {
+    font-size: 1.875rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--brand-heading);
+  }
+
+  /* Section heading (h2) */
+  .heading-section {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--brand-heading);
+  }
+
+  /* Body paragraph text */
+  .text-body {
+    font-family: var(--serif);
+    color: var(--text);
+    line-height: 1.625;
+  }
+
+  /* Nav link text */
+  .nav-link-text {
+    font-family: var(--sans);
+    font-weight: 500;
+  }
+
+  /* Accent link */
+  .link-accent {
+    color: var(--brand-primary);
+  }
+  .link-accent:hover {
+    text-decoration: underline;
+  }
+
+  /* Active nav link style (on #838661 header) */
+  .nav-link-active {
+    background-color: #FFF8EF;
+    color: #838661;
+  }
+
+  /* Inactive nav link style (on #838661 header) */
+  .nav-link-inactive {
+    color: #FFF8EF;
+  }
+  .nav-link-inactive:hover {
+    background-color: rgba(255, 248, 239, 0.15);
+    color: #FFF8EF;
+  }
+
+  /* Regular button: initial = bg color, accent text, dark border, accent bottom strip; hover = accent bg fills from bottom up */
+  .btn-regular {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-bottom: 3px solid var(--accent);
+    background: var(--bg);
+    color: var(--accent);
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    z-index: 1;
+    transition: color 0.3s;
+  }
+  .btn-regular::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    background: var(--accent);
+    transition: height 0.3s ease;
+    z-index: -1;
+  }
+  .btn-regular:hover {
+    color: var(--bg);
+  }
+  .btn-regular:hover::before {
+    height: 100%;
+  }
+
+  /* Hover background for social icons (on #838661 header/footer) */
+  .hover-bg-light:hover {
+    background-color: rgba(255, 248, 239, 0.15);
+  }
+
+  /* Header/footer social icon background */
+  .social-icon-bg {
+    background-color: rgba(255, 248, 239, 0.15);
+  }
+  .social-icon-bg:hover {
+    background-color: rgba(255, 248, 239, 0.25);
+  }
+}
+

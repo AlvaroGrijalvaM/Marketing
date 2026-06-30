@@ -1,0 +1,16 @@
+# Visual Studio Code local settings and cache
+.vscode/*
+
+# Untrack local configurations but allow sharing core team files
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+!*.code-workspace
+
+# Ignore built VS Code Extensions
+*.vsix
+
+node_modules/
+.env
