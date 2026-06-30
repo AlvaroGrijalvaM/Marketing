@@ -6,6 +6,7 @@ import ServicePage from "./components/ServicePage";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import QuoteForm from "./pages/QuoteForm";
+import NotFound from "./pages/NotFound";
 
 export default function App(){
   return(
@@ -21,6 +22,7 @@ export default function App(){
           <Route path="contact" element={<Contact/>}>
             <Route path="solicitar" element={<QuoteForm/>}/>
           </Route>
+          <Route path="*" element={<NotFound/>}/>
         </Route>
       </Routes>
     </BrowserRouter>
