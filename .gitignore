@@ -1,5 +1,5 @@
 # Visual Studio Code local settings and cache
-.vscode/*
+.vscode/
 
 # Untrack local configurations but allow sharing core team files
 !.vscode/settings.json
@@ -12,5 +12,6 @@
 # Ignore built VS Code Extensions
 *.vsix
 
+.gitignore
 node_modules/
 .env
