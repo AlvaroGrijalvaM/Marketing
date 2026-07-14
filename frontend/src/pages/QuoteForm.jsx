@@ -3,12 +3,13 @@ import {Link} from "react-router-dom";
 
 const budgetOptions=["$5,000", "$10,000", "$15,000", "$20,000", "Más de $20,000"];
 
-const API_URL=import.meta.env.VITE_API_URL || "http://localhost:3001";
+const API_URL=import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 export default function QuoteForm(){
   const [formData, setFormData]=useState({
     nombre: "", apellido: "", email: "", telefono: "", negocio: "", sitioWeb: "",
-    redesSociales: "", acercaDe: "", servicio: "", expectativas: "", presupuesto: "", comoSupiste: ""
+    redesSociales: "", acercaDe: "", servicio: "", expectativas: "", presupuesto: "",
+    comoSupiste: "", honeypot: ""  // honeypot field (hidden from users)
   });
 
   const [errors, setErrors]=useState({});
@@ -16,6 +17,7 @@ export default function QuoteForm(){
   const [submitted, setSubmitted]=useState(false);
   const [sending, setSending]=useState(false);
   const [apiError, setApiError]=useState("");
+  const [successMessage, setSuccessMessage]=useState("");
 
   // Frontend validation
   function validateForm(){
@@ -25,34 +27,44 @@ export default function QuoteForm(){
       newErrors.nombre="El nombre es obligatorio.";
     }else if (formData.nombre.trim().length<2){
       newErrors.nombre="El nombre debe tener al menos 2 caracteres.";
+    }else if (!/^[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\s'-]+$/.test(formData.nombre.trim())){
+      newErrors.nombre="El nombre solo debe contener letras y espacios.";
     }
 
     if (!formData.apellido.trim()){
       newErrors.apellido="El apellido es obligatorio.";
     }else if (formData.apellido.trim().length<2){
       newErrors.apellido="El apellido debe tener al menos 2 caracteres.";
+    }else if (!/^[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\s'-]+$/.test(formData.apellido.trim())){
+      newErrors.apellido="El apellido solo debe contener letras y espacios.";
     }
 
     if (!formData.email.trim()){
       newErrors.email="El correo electrónico es obligatorio.";
-    }else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)){
+    }else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(formData.email)){
       newErrors.email="El formato del correo electrónico no es válido.";
     }
 
     if (formData.telefono.trim()){
-      const cleaned=formData.telefono.replace(/[\s\-\(\)\+]/g, "");
+      const cleaned=formData.telefono.replace(/[\s\-\(\)\.\+]/g, "");
       if (cleaned.length<10){
         newErrors.telefono="El teléfono debe tener al menos 10 dígitos.";
+      }else if (cleaned.length>15){
+        newErrors.telefono="El teléfono tiene demasiados dígitos.";
       }else if (!/^\d+$/.test(cleaned)){
         newErrors.telefono="El teléfono solo debe contener números.";
       }
     }
 
     if (formData.sitioWeb.trim()){
-      try{
-        new URL(formData.sitioWeb);
-      }catch{
-        newErrors.sitioWeb="El formato de la URL no es válido.";
+      if (!/^https?:\/\/.+/i.test(formData.sitioWeb)){
+        newErrors.sitioWeb="El sitio web debe iniciar con http:// o https://.";
+      }else{
+        try{
+          new URL(formData.sitioWeb);
+        }catch{
+          newErrors.sitioWeb="El formato de la URL no es válido.";
+        }
       }
     }
 
@@ -64,6 +76,8 @@ export default function QuoteForm(){
 
     if (!formData.servicio.trim()){
       newErrors.servicio="Este campo es obligatorio.";
+    }else if (formData.servicio.trim().length<2){
+      newErrors.servicio="El servicio debe tener al menos 2 caracteres.";
     }
 
     if (!formData.presupuesto){
@@ -72,6 +86,8 @@ export default function QuoteForm(){
 
     if (!formData.comoSupiste.trim()){
       newErrors.comoSupiste="Este campo es obligatorio.";
+    }else if (formData.comoSupiste.trim().length<2){
+      newErrors.comoSupiste="Indica cómo te enteraste (mín. 2 caracteres).";
     }
 
     setErrors(newErrors);
@@ -88,11 +104,15 @@ export default function QuoteForm(){
     if (apiError){
       setApiError("");
     }
+    if (successMessage){
+      setSuccessMessage("");
+    }
   };
 
   const handleSubmit=(e)=>{
     e.preventDefault();
     setApiError("");
+    setSuccessMessage("");
 
     if (!validateForm()){
       return;
@@ -105,6 +125,7 @@ export default function QuoteForm(){
     setShowModal(false);
     setSending(true);
     setApiError("");
+    setSuccessMessage("");
 
     try{
       const response=await fetch(`${API_URL}/api/send-quote`, {
@@ -117,7 +138,8 @@ export default function QuoteForm(){
 
       if (!response.ok){
         if (result.errors){
-          setErrors(result.errors);
+          // Merge server errors with any existing client errors
+          setErrors((prev)=>({...prev, ...result.errors}));
           setApiError("Corrige los errores marcados en el formulario.");
         }else{
           setApiError(result.message || "Error al enviar la solicitud.");
@@ -150,7 +172,10 @@ export default function QuoteForm(){
     return(
       <div className="page-container">
         <h1 className="heading-page">Solicitud enviada</h1>
-        <p className="text-body mb-6">Gracias por contactarnos. Te responderemos a la brevedad posible.</p>
+        <div className="mb-6 p-4 rounded-lg border text-sm" style={{borderColor: "#86efac", background: "#f0fdf4", color: "#166534"}}>
+          <p className="font-semibold">✓ Solicitud enviada correctamente</p>
+          <p className="mt-1">Gracias por contactarnos. Te responderemos a la brevedad posible.</p>
+        </div>
         <Link to="../" className="btn-regular">Volver a contacto</Link>
       </div>
     );
@@ -161,14 +186,29 @@ export default function QuoteForm(){
       <Link to="../" className="inline-block text-sm link-accent mb-6">← Volver a contacto</Link>
       <h1 className="heading-page">Solicitud de servicios</h1>
 
+      {/* Success message (non-submitted state, e.g. after partial success) */}
+      {successMessage && (
+        <div className="mb-6 p-4 rounded-lg border text-sm" style={{borderColor: "#86efac", background: "#f0fdf4", color: "#166534"}}>
+          {successMessage}
+        </div>
+      )}
+
+      {/* Error message */}
       {apiError && (
         <div className="mb-6 p-4 rounded-lg border text-sm" style={{borderColor: "#fca5a5", background: "#fef2f2", color: "#991b1b"}}>
-          {apiError}
+          <p className="font-semibold">✗ Error</p>
+          <p className="mt-1">{apiError}</p>
         </div>
       )}
 
       <div className="border border-[var(--border)] rounded-lg p-6">
         <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+          {/* Honeypot field — hidden from real users, visible to bots */}
+          <div style={{position: "absolute", left: "-9999px", opacity: 0}} aria-hidden="true">
+            <label htmlFor="honeypot">No llenar</label>
+            <input type="text" id="honeypot" name="honeypot" value={formData.honeypot} onChange={handleChange} tabIndex={-1} autoComplete="off"/>
+          </div>
+
           <div>
             <label className="block text-sm font-semibold mb-2" style={{color: "var(--brand-heading)"}}>Nombre completo
               <span className="text-xs" style={{color: "var(--text)"}}>(obligatorio)</span>
