@@ -20,7 +20,7 @@ const transporter=nodemailer.createTransport({
 });
 
 // POST request to send quote form (with validation middleware)
-app.post("/api/send-quote", validateQuoteForm, async (req, res) => {
+app.post("/api/yessara-web/send-quote", validateQuoteForm, async (req, res) => {
   try {
     const formData = req.body;
 

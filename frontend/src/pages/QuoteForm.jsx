@@ -3,7 +3,7 @@ import {Link} from "react-router-dom";
 
 const budgetOptions=["$5,000", "$10,000", "$15,000", "$20,000", "Más de $20,000"];
 
-const API_URL=import.meta.env.VITE_API_URL || "http://localhost:3000";
+const API_URL=import.meta.env.VITE_API_URL || "";
 
 export default function QuoteForm(){
   const [formData, setFormData]=useState({
@@ -128,7 +128,7 @@ export default function QuoteForm(){
     setSuccessMessage("");
 
     try{
-      const response=await fetch(`${API_URL}/api/send-quote`, {
+      const response=await fetch(`${API_URL}/api/yessara-web/send-quote`, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(formData)
