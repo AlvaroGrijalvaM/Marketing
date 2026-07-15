@@ -160,7 +160,7 @@ app.post("/api/send-quote", validateQuoteForm, async (req, res) => {
 
     // Send email via SMTP
     const info=await transporter.sendMail({
-      from: `"${process.env.SMTP_USER}" <${process.env.SMTP_USER}>`,
+      from: `"Yessara Creative Web" <${process.env.MAIL_FROM}>`,
       to: process.env.MAIL_TO,
       subject: `Nueva solicitud de servicios - ${formData.nombre} ${formData.apellido}`,
       html: htmlContent
