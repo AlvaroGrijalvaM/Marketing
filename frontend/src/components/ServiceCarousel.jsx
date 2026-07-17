@@ -1,7 +1,6 @@
 import {useState, useEffect} from "react";
 import {Link} from "react-router-dom";
 import {services} from "../data/serviceData";
-import placeholderImage from "../assets/placeholder-image.png";
 import {loadImage} from "../utils/imageLoader";
 
 export default function ServiceCarousel() {
@@ -9,19 +8,24 @@ export default function ServiceCarousel() {
   const [fade, setFade]=useState(true);
   const [imagesLoaded, setImagesLoaded] = useState({});
   const total = services.length;
+  const service=services[current];
 
   // Preload images for the current service using loadImage promise
   useEffect(() => {
     async function loadServiceImage() {
+      if (!service.image) {
+        setImagesLoaded((prev) => ({...prev, [current]: false}));
+        return;
+      }
       try {
-        await loadImage(placeholderImage);
+        await loadImage(service.image);
         setImagesLoaded((prev) => ({...prev, [current]: true}));
       } catch {
         setImagesLoaded((prev) => ({...prev, [current]: false}));
       }
     }
     loadServiceImage();
-  }, [current]);
+  }, [current, service]);
 
   const changeSlide=(index)=>{
     setFade(false);
@@ -42,8 +46,6 @@ export default function ServiceCarousel() {
     return ()=>clearInterval(interval);
   }, [current, total]);
 
-  const service=services[current];
-
   return(
     <section className="w-full max-w-3xl mx-auto px-4 py-8">
       <h1 className="heading-page mb-6">Nuestros servicios</h1>
@@ -59,7 +61,7 @@ export default function ServiceCarousel() {
             </div>
           )}
           <img
-            src={placeholderImage}
+            src={service.image || ""}
             alt={service.name}
             className={`w-full h-56 object-cover ${imagesLoaded[current] ? "block" : "hidden"}`}
           />

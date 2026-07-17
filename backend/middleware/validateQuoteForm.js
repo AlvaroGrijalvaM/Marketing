@@ -1,10 +1,3 @@
-/**
- * Middleware to validate the quote form submission data.
- * Performs extensive validation including anti-spam, security, and logical checks.
- * If validation fails, responds with a 400 status and the error details.
- * If validation passes, calls next() so the request continues to the route handler.
- */
-
 // Allowed budget options (whitelist)
 const ALLOWED_BUDGETS = new Set([
   "$5,000", "$10,000", "$15,000", "$20,000", "Más de $20,000"

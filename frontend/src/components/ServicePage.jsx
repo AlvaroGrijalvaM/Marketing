@@ -1,8 +1,6 @@
 import {useState, useEffect} from "react";
 import {useParams, Link} from "react-router-dom";
 import {services, clients} from "../data/serviceData";
-import placeholderImage from "../assets/placeholder-image.png";
-import placeholderClient from "../assets/placeholder-client.png";
 import {loadImage} from "../utils/imageLoader";
 
 export default function ServicePage(){
@@ -19,8 +17,12 @@ export default function ServicePage(){
   useEffect(() => {
     if (!service) return;
     async function loadServiceImage() {
+      if (!service.image) {
+        setServiceImageError(true);
+        return;
+      }
       try {
-        await loadImage(placeholderImage);
+        await loadImage(service.image);
         setServiceImageLoaded(true);
       } catch {
         setServiceImageError(true);
@@ -34,8 +36,12 @@ export default function ServicePage(){
     if (serviceClients.length === 0) return;
     async function loadClientImages() {
       const loadPromises = serviceClients.map(async (client) => {
+        if (!client.image) {
+          setClientImagesError((prev) => ({...prev, [client.id]: true}));
+          return;
+        }
         try {
-          await loadImage(client.image || placeholderClient);
+          await loadImage(client.image);
           setClientImagesLoaded((prev) => ({...prev, [client.id]: true}));
         } catch {
           setClientImagesError((prev) => ({...prev, [client.id]: true}));
@@ -63,18 +69,14 @@ export default function ServicePage(){
           <span className="text-gray-400 text-sm">Imagen no disponible</span>
         </div>
       )}
-      <img
-        src={placeholderImage}
-        alt={service.name}
+      <img src={service.image || ""} alt={service.name}
         className={`w-full h-56 object-cover rounded-xl mb-6 ${serviceImageLoaded ? "block" : "hidden"}`}
-        onLoad={() => setServiceImageLoaded(true)}
-        onError={() => setServiceImageError(true)}
+        onLoad={() => setServiceImageLoaded(true)} onError={() => setServiceImageError(true)}
       />
 
       <h1 className="heading-page">{service.name}</h1>
       <p className="text-body">{service.description}</p>
 
-      {/* Clients section with async image loading */}
       {serviceClients.length > 0 && (
         <section className="mt-12">
           <h2 className="heading-section mb-6">Nuestros clientes</h2>
@@ -89,22 +91,13 @@ export default function ServicePage(){
                     <span className="text-gray-400 text-xs">Sin imagen</span>
                   </div>
                 )}
-                <img
-                  src={client.image || placeholderClient}
-                  alt={client.name}
+                <img src={client.image || ""} alt={client.name}
                   className={`w-full max-w-[200px] h-auto mb-2 ${clientImagesLoaded[client.id] ? "block" : "hidden"}`}
                   onLoad={() => setClientImagesLoaded((prev) => ({...prev, [client.id]: true}))}
                   onError={() => setClientImagesError((prev) => ({...prev, [client.id]: true}))}
                 />
                 {client.url ? (
-                  <a
-                    href={client.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="link-accent font-medium"
-                  >
-                    @{client.name}
-                  </a>
+                  <a href={client.url} target="_blank" rel="noopener noreferrer" className="link-accent font-medium">@{client.name}</a>
                 ) : (
                   <span className="font-medium text-[var(--text)]">@{client.name}</span>
                 )}

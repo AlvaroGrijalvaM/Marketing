@@ -1,6 +1,6 @@
 import {useState, useEffect} from "react";
 import {company} from "../data/companyData";
-import placeholderImage from "../assets/placeholder-image.png";
+const placeholderImage = "";
 import {loadImage} from "../utils/imageLoader";
 
 export default function About(){
