@@ -30,7 +30,7 @@ export default function Navbar(){
     <nav className={`fixed top-0 left-0 right-0 z-50 bg-[#838661] shadow-sm transition-transform duration-300 ${visible ? "translate-y-0" : "-translate-y-full"}`}>
       <div className="flex items-center justify-between px-6 py-3 container-wide">
         <div className="flex items-center gap-6">
-          <Link to="home" className="flex-shrink-0"><img src={logo} alt={company.name} className="h-12 w-auto-0"/></Link>
+          <Link to="/home" className="flex-shrink-0"><img src={logo} alt={company.name} className="h-12 w-auto-0"/></Link>
           <ul className="hidden sm:flex items-center gap-1">
             {navLinks.map(({ label, to }) => (
               <li key={to}>

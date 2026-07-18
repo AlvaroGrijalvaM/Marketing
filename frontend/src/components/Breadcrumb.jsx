@@ -12,10 +12,10 @@ export default function Breadcrumb() {
   const location=useLocation();
   const pathname=location.pathname;
 
-  const crumbs=[{label: "Inicio", to: "home"}];
+  const crumbs=[{label: "Inicio", to: "/home"}];
 
   if (pathname.includes("/services")){
-    crumbs.push({label: "Servicios", to: "services"});
+    crumbs.push({label: "Servicios", to: "/services"});
     const slug=pathname.split("/services/")[1];
     if (slug){
       const service=services.find((s) => s.slug===slug);

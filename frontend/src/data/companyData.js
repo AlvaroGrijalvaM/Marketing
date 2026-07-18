@@ -9,7 +9,7 @@ export const company={
 };
 
 export const navLinks=[
-  {label: "Servicios", to: "services" },
-  {label: "Sobre nosotros", to: "about" },
-  {label: "Contacto", to: "contact" },
+  {label: "Servicios", to: "/services" },
+  {label: "Sobre nosotros", to: "/about" },
+  {label: "Contacto", to: "/contact" },
 ];
