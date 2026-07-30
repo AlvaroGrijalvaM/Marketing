@@ -1,4 +1,5 @@
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
+import ScrollToTop from "./components/ScrollToTop";
 import Home from "./pages/Home";
 import Homepage from "./pages/Homepage";
 import Services from "./services/Services";
@@ -11,6 +12,7 @@ import NotFound from "./pages/NotFound";
 export default function App(){
   return(
     <BrowserRouter>
+      <ScrollToTop/>
       <Routes>
         <Route index element={<Navigate replace to="home"/>}/>
         <Route path="/" element={<Home/>}>

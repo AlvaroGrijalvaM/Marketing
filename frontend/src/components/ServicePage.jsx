@@ -29,7 +29,7 @@ export default function ServicePage(){
       }
     }
     loadServiceImage();
-  }, [service]);
+  }, [slug]);
 
   // Async function to load each client's image
   useEffect(() => {
@@ -50,7 +50,7 @@ export default function ServicePage(){
       await Promise.all(loadPromises);
     }
     loadClientImages();
-  }, [serviceClients]);
+  }, [slug]);
 
   if (!service) return null;
 

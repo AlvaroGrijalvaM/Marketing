@@ -2,7 +2,6 @@ import {useState} from "react";
 import {Link} from "react-router-dom";
 
 const budgetOptions=["$5,000", "$10,000", "$15,000", "$20,000", "Más de $20,000"];
-
 const API_URL=import.meta.env.VITE_API_URL || "";
 
 export default function QuoteForm(){
@@ -168,12 +167,44 @@ export default function QuoteForm(){
     };
   }
 
+  // Helper to render a field with absolute-positioned error message
+  function renderField(children, errorMsg){
+    return (
+      <div style={{position: "relative"}}>
+        {children}
+        {errorMsg && (
+          <p style={{
+            position: "absolute",
+            bottom: "-18px",
+            left: "0",
+            fontSize: "11px",
+            color: "#dc2626",
+            margin: 0,
+            whiteSpace: "nowrap"
+          }}>
+            ⚠️ {errorMsg}
+          </p>
+        )}
+      </div>
+    );
+  }
+
+  // Count validation errors (non-empty strings)
+  const errorCount=Object.values(errors).filter((v) => v && v.length>0).length;
+
+  // Determine apiError icon
+  function apiErrorIcon(msg){
+    if (!msg) return "";
+    if (msg.includes("conexión")) return "🔌";
+    return "❌";
+  }
+
   if (submitted){
     return(
       <div className="page-container">
         <h1 className="heading-page">Solicitud enviada</h1>
         <div className="mb-6 p-4 rounded-lg border text-sm" style={{borderColor: "#86efac", background: "#f0fdf4", color: "#166534"}}>
-          <p className="font-semibold">✓ Solicitud enviada correctamente</p>
+          <p className="font-semibold">✅ Solicitud enviada correctamente</p>
           <p className="mt-1">Gracias por contactarnos. Te responderemos a la brevedad posible.</p>
         </div>
         <Link to="../" className="btn-regular">Volver a contacto</Link>
@@ -189,15 +220,7 @@ export default function QuoteForm(){
       {/* Success message (non-submitted state, e.g. after partial success) */}
       {successMessage && (
         <div className="mb-6 p-4 rounded-lg border text-sm" style={{borderColor: "#86efac", background: "#f0fdf4", color: "#166534"}}>
-          {successMessage}
-        </div>
-      )}
-
-      {/* Error message */}
-      {apiError && (
-        <div className="mb-6 p-4 rounded-lg border text-sm" style={{borderColor: "#fca5a5", background: "#fef2f2", color: "#991b1b"}}>
-          <p className="font-semibold">✗ Error</p>
-          <p className="mt-1">{apiError}</p>
+          ✅ {successMessage}
         </div>
       )}
 
@@ -215,16 +238,20 @@ export default function QuoteForm(){
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <input type="text" name="nombre" value={formData.nombre} onChange={handleChange} placeholder="Nombre"
-                  required className="w-full px-4 py-2.5 rounded-lg border text-sm" style={inputStyle(!!errors.nombre)}
-                />
-                {errors.nombre && <p className="text-xs mt-1" style={{color: "#dc2626"}}>{errors.nombre}</p>}
+                {renderField(
+                  <input type="text" name="nombre" value={formData.nombre} onChange={handleChange} placeholder="Nombre"
+                    required className="w-full px-4 py-2.5 rounded-lg border text-sm" style={inputStyle(!!errors.nombre)}
+                  />,
+                  errors.nombre
+                )}
               </div>
               <div>
-                <input type="text" name="apellido" value={formData.apellido} onChange={handleChange} placeholder="Apellido"
-                  required className="w-full px-4 py-2.5 rounded-lg border text-sm" style={inputStyle(!!errors.apellido)}
-                />
-                {errors.apellido && <p className="text-xs mt-1" style={{color: "#dc2626"}}>{errors.apellido}</p>}
+                {renderField(
+                  <input type="text" name="apellido" value={formData.apellido} onChange={handleChange} placeholder="Apellido"
+                    required className="w-full px-4 py-2.5 rounded-lg border text-sm" style={inputStyle(!!errors.apellido)}
+                  />,
+                  errors.apellido
+                )}
               </div>
             </div>
           </div>
@@ -232,91 +259,123 @@ export default function QuoteForm(){
             <label className="block text-sm font-semibold mb-2" style={{color: "var(--brand-heading)"}}>Correo electrónico
               <span className="text-xs" style={{color: "var(--text)"}}>(obligatorio)</span>
             </label>
-            <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="correo@ejemplo.com"
-              required className="w-full px-4 py-2.5 rounded-lg border text-sm" style={inputStyle(!!errors.email)}
-            />
-            {errors.email && <p className="text-xs mt-1" style={{color: "#dc2626"}}>{errors.email}</p>}
+            {renderField(
+              <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="correo@ejemplo.com"
+                required className="w-full px-4 py-2.5 rounded-lg border text-sm" style={inputStyle(!!errors.email)}
+              />,
+              errors.email
+            )}
           </div>
           <div>
             <label className="block text-sm font-semibold mb-2" style={{color: "var(--brand-heading)"}}>Teléfono</label>
-            <input type="tel" name="telefono" value={formData.telefono} onChange={handleChange} placeholder="+52 123 456 7890"
-              className="w-full px-4 py-2.5 rounded-lg border text-sm" style={inputStyle(!!errors.telefono)}
-            />
-            {errors.telefono && <p className="text-xs mt-1" style={{color: "#dc2626"}}>{errors.telefono}</p>}
+            {renderField(
+              <input type="tel" name="telefono" value={formData.telefono} onChange={handleChange} placeholder="+52 123 456 7890"
+                className="w-full px-4 py-2.5 rounded-lg border text-sm" style={inputStyle(!!errors.telefono)}
+              />,
+              errors.telefono
+            )}
           </div>
           <div>
             <label className="block text-sm font-semibold mb-2" style={{color: "var(--brand-heading)"}}>Nombre de tu negocio</label>
-            <input type="text" name="negocio" value={formData.negocio} onChange={handleChange} placeholder="Nombre de tu empresa o emprendimiento"
-              className="w-full px-4 py-2.5 rounded-lg border text-sm" style={inputStyle(!!errors.negocio)}
-            />
-            {errors.negocio && <p className="text-xs mt-1" style={{color: "#dc2626"}}>{errors.negocio}</p>}
+            {renderField(
+              <input type="text" name="negocio" value={formData.negocio} onChange={handleChange} placeholder="Nombre de tu empresa o emprendimiento"
+                className="w-full px-4 py-2.5 rounded-lg border text-sm" style={inputStyle(!!errors.negocio)}
+              />,
+              errors.negocio
+            )}
           </div>
           <div>
             <label className="block text-sm font-semibold mb-2" style={{color: "var(--brand-heading)"}}>Sitio web</label>
-            <input type="url" name="sitioWeb" value={formData.sitioWeb} onChange={handleChange} placeholder="https://tusitio.com"
-              className="w-full px-4 py-2.5 rounded-lg border text-sm" style={inputStyle(!!errors.sitioWeb)}
-            />
-            {errors.sitioWeb && <p className="text-xs mt-1" style={{color: "#dc2626"}}>{errors.sitioWeb}</p>}
+            {renderField(
+              <input type="url" name="sitioWeb" value={formData.sitioWeb} onChange={handleChange} placeholder="https://tusitio.com"
+                className="w-full px-4 py-2.5 rounded-lg border text-sm" style={inputStyle(!!errors.sitioWeb)}
+              />,
+              errors.sitioWeb
+            )}
           </div>
           <div>
             <label className="block text-sm font-semibold mb-2" style={{color: "var(--brand-heading)"}}>Redes sociales</label>
-            <input type="text" name="redesSociales" value={formData.redesSociales} onChange={handleChange} placeholder="@tuusuario"
-              className="w-full px-4 py-2.5 rounded-lg border text-sm" style={inputStyle(!!errors.redesSociales)}
-            />
-            {errors.redesSociales && <p className="text-xs mt-1" style={{color: "#dc2626"}}>{errors.redesSociales}</p>}
+            {renderField(
+              <input type="text" name="redesSociales" value={formData.redesSociales} onChange={handleChange} placeholder="@tuusuario"
+                className="w-full px-4 py-2.5 rounded-lg border text-sm" style={inputStyle(!!errors.redesSociales)}
+              />,
+              errors.redesSociales
+            )}
           </div>
           <div>
             <label className="block text-sm font-semibold mb-2" style={{color: "var(--brand-heading)"}}>Cuéntanos acerca de tu negocio
               <span className="text-xs" style={{color: "var(--text)"}}>(obligatorio)</span>
             </label>
-            <textarea name="acercaDe" value={formData.acercaDe} onChange={handleChange} rows={4} placeholder="Describe tu negocio, giro, productos o servicios..."
-              required className="w-full px-4 py-2.5 rounded-lg border text-sm resize-y" style={inputStyle(!!errors.acercaDe)}
-            />
-            {errors.acercaDe && <p className="text-xs mt-1" style={{color: "#dc2626"}}>{errors.acercaDe}</p>}
+            {renderField(
+              <textarea name="acercaDe" value={formData.acercaDe} onChange={handleChange} rows={4} placeholder="Describe tu negocio, giro, productos o servicios..."
+                required className="w-full px-4 py-2.5 rounded-lg border text-sm resize-y" style={inputStyle(!!errors.acercaDe)}
+              />,
+              errors.acercaDe
+            )}
           </div>
           <div>
             <label className="block text-sm font-semibold mb-2" style={{color: "var(--brand-heading)"}}>¿En qué servicio estás interesad@?
               <span className="text-xs" style={{color: "var(--text)"}}>(obligatorio)</span>
             </label>
-            <input type="text" name="servicio" value={formData.servicio} onChange={handleChange} placeholder="Ej. Manejo de redes, Branding, etc."
-              required className="w-full px-4 py-2.5 rounded-lg border text-sm" style={inputStyle(!!errors.servicio)}
-            />
-            {errors.servicio && <p className="text-xs mt-1" style={{color: "#dc2626"}}>{errors.servicio}</p>}
+            {renderField(
+              <input type="text" name="servicio" value={formData.servicio} onChange={handleChange} placeholder="Ej. Manejo de redes, Branding, etc."
+                required className="w-full px-4 py-2.5 rounded-lg border text-sm" style={inputStyle(!!errors.servicio)}
+              />,
+              errors.servicio
+            )}
           </div>
           <div>
             <label className="block text-sm font-semibold mb-2" style={{color: "var(--brand-heading)"}}>¿Qué esperas de nuestra agencia?</label>
-            <textarea name="expectativas" value={formData.expectativas} onChange={handleChange} rows={3} placeholder="Cuéntanos qué resultados esperas lograr..."
-              className="w-full px-4 py-2.5 rounded-lg border text-sm resize-y" style={inputStyle(!!errors.expectativas)}
-            />
-            {errors.expectativas && <p className="text-xs mt-1" style={{color: "#dc2626"}}>{errors.expectativas}</p>}
+            {renderField(
+              <textarea name="expectativas" value={formData.expectativas} onChange={handleChange} rows={3} placeholder="Cuéntanos qué resultados esperas lograr..."
+                className="w-full px-4 py-2.5 rounded-lg border text-sm resize-y" style={inputStyle(!!errors.expectativas)}
+              />,
+              errors.expectativas
+            )}
           </div>
           <div>
             <label className="block text-sm font-semibold mb-2" style={{color: "var(--brand-heading)"}}>¿Cuál es tu presupuesto?
               <span className="text-xs" style={{color: "var(--text)"}}>(obligatorio)</span>
             </label>
-            <select name="presupuesto" value={formData.presupuesto} onChange={handleChange} required
-              className="w-full px-4 py-2.5 rounded-lg border text-sm" style={inputStyle(!!errors.presupuesto)}
-            >
-              <option value="" disabled>Selecciona un presupuesto</option>
-              {budgetOptions.map((opt)=>(
-                <option key={opt} value={opt}>{opt} MXN</option>
-              ))}
-            </select>
-            {errors.presupuesto && <p className="text-xs mt-1" style={{color: "#dc2626"}}>{errors.presupuesto}</p>}
+            {renderField(
+              <select name="presupuesto" value={formData.presupuesto} onChange={handleChange} required
+                className="w-full px-4 py-2.5 rounded-lg border text-sm" style={inputStyle(!!errors.presupuesto)}
+              >
+                <option value="" disabled>Selecciona un presupuesto</option>
+                {budgetOptions.map((opt)=>(
+                  <option key={opt} value={opt}>{opt} MXN</option>
+                ))}
+              </select>,
+              errors.presupuesto
+            )}
           </div>
           <div>
             <label className="block text-sm font-semibold mb-2" style={{color: "var(--brand-heading)"}}>¿Cómo te enteraste de nosotros?
               <span className="text-xs" style={{color: "var(--text)"}}>(obligatorio)</span>
             </label>
-            <input type="text" name="comoSupiste" value={formData.comoSupiste} onChange={handleChange} placeholder="Ej. Instagram, Google, Recomendación..."
-              required className="w-full px-4 py-2.5 rounded-lg border text-sm" style={inputStyle(!!errors.comoSupiste)}
-            />
-            {errors.comoSupiste && <p className="text-xs mt-1" style={{color: "#dc2626"}}>{errors.comoSupiste}</p>}
+            {renderField(
+              <input type="text" name="comoSupiste" value={formData.comoSupiste} onChange={handleChange} placeholder="Ej. Instagram, Google, Recomendación..."
+                required className="w-full px-4 py-2.5 rounded-lg border text-sm" style={inputStyle(!!errors.comoSupiste)}
+              />,
+              errors.comoSupiste
+            )}
           </div>
           <div className="pt-4">
             <button type="submit" className="btn-regular" disabled={sending}>
               {sending ? "Enviando..." : "Enviar"}
             </button>
+
+            {/* Error summary below the button */}
+            {(apiError || errorCount>0) && (
+              <div className="mt-4 p-3 rounded-lg border text-sm" style={{borderColor: "#fca5a5", background: "#fef2f2", color: "#991b1b"}}>
+                {errorCount>0 && (
+                  <p className="font-semibold mb-1">⚠️ Hay {errorCount} error(es) en el formulario</p>
+                )}
+                {apiError && (
+                  <p className="mt-1">{apiErrorIcon(apiError)} {apiError}</p>
+                )}
+              </div>
+            )}
           </div>
         </form>
       </div>

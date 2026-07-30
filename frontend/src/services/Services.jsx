@@ -3,7 +3,13 @@ import ServiceCarousel from "../components/ServiceCarousel";
 
 export default function Services() {
   const location=useLocation();
-  const isIndex=location.pathname==="/services" || location.pathname==="/services/";
+  const pathname=location.pathname;
+  const isIndex=pathname==="/services" || pathname==="/services/";
 
-  return isIndex ? <ServiceCarousel/> : <Outlet/>;
+  // If not at the index, render the nested child route (ServicePage)
+  if (!isIndex){
+    return <Outlet/>;
+  }
+
+  return <ServiceCarousel/>;
 }

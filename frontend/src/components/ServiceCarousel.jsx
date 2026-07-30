@@ -25,7 +25,7 @@ export default function ServiceCarousel() {
       }
     }
     loadServiceImage();
-  }, [current, service]);
+  }, [current]);
 
   const changeSlide=(index)=>{
     setFade(false);

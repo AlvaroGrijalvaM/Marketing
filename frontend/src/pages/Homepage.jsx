@@ -1,11 +1,11 @@
 import {useState, useEffect} from "react";
 import {company} from "../data/companyData";
-const placeholderImage = "";
 import {loadImage} from "../utils/imageLoader";
+const placeholderImage="";
 
 export default function Homepage(){
-  const [heroLoaded, setHeroLoaded] = useState(false);
-  const [heroError, setHeroError] = useState(false);
+  const [heroLoaded, setHeroLoaded]=useState(false);
+  const [heroError, setHeroError]=useState(false);
 
   // Async function to load the hero image
   useEffect(() => {
@@ -41,7 +41,6 @@ export default function Homepage(){
           onError={() => setHeroError(true)}
         />
       </section>
-
       <section className="page-container">
         <h2 className="heading-section">Bienvenidos a {company.name}</h2>
         <p className="text-body mb-4">

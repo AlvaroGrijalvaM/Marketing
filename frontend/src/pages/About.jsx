@@ -1,11 +1,11 @@
 import {useState, useEffect} from "react";
 import {company} from "../data/companyData";
-const placeholderImage = "";
 import {loadImage} from "../utils/imageLoader";
+const placeholderImage="";
 
 export default function About(){
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const [imageError, setImageError] = useState(false);
+  const [imageLoaded, setImageLoaded]=useState(false);
+  const [imageError, setImageError]=useState(false);
 
   // Async function to load the team image
   useEffect(() => {
@@ -42,7 +42,7 @@ export default function About(){
         onError={() => setImageError(true)}
       />
 
-      <div className="space-y-4 text-body">
+      <div className="space-y-4 text-body animate-fadeIn">
         <p>
           {company.name} nació con la misión de ayudar a las marcas mexicanas a
           destacar en un entorno digital cada vez más competitivo. Creemos que cada

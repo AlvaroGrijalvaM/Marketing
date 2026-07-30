@@ -1,4 +1,4 @@
-import {Link} from "react-router-dom";
+import {Link, NavLink} from "react-router-dom";
 import {company, navLinks} from "../data/companyData";
 import logo from "../assets/logo.png";
 import WhatsApp from "../assets/WhatsApp.png";
@@ -23,7 +23,6 @@ export default function Footer(){
             </a>
           </div>
         </div>
-
         <div>
           <h2 className="text-lg font-semibold text-[#FFF8EF] mb-3">Contacto</h2>
           <ul className="space-y-2 text-sm text-[#FFF8EF] opacity-80">
@@ -35,22 +34,20 @@ export default function Footer(){
             </li>
           </ul>
         </div>
-
         <div>
           <h2 className="text-lg font-semibold text-[#FFF8EF] mb-3">Navegación</h2>
           <ul className="space-y-2 text-sm">
             <li>
-              <Link to="home" className="text-[#FFF8EF] opacity-80 hover:opacity-100 transition-opacity">Inicio</Link>
+              <NavLink to="/home" className={({isActive}) => `transition-opacity ${isActive ? "opacity-100 font-semibold" : "opacity-80 hover:opacity-100"}`}>Inicio</NavLink>
             </li>
             {navLinks.map(({label, to}) => (
               <li key={to}>
-                <Link to={to} className="text-[#FFF8EF] opacity-80 hover:opacity-100 transition-opacity">{label}</Link>
+                <NavLink to={to} className={({isActive}) => `transition-opacity ${isActive ? "opacity-100 font-semibold" : "opacity-80 hover:opacity-100"}`}>{label}</NavLink>
               </li>
             ))}
           </ul>
         </div>
       </div>
-
       <div className="border-t border-[#FFF8EF]/20 py-4 text-center text-sm text-[#FFF8EF] opacity-60">
         © 2026 {company.name}. Todos los derechos reservados.
       </div>
